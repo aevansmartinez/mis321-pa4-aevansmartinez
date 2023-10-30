@@ -1,39 +1,39 @@
-﻿// See https://aka.ms/new-console-template for more information
-// using System.Data;
-// using MySql.Data;
-using mis321_pa4_aevansmartinez;
-using MySql.Data.MySqlClient;
-Console.WriteLine("Hello World!");
+﻿using Microsoft.AspNetCore.Cors;
 
-Database db = new Database();
-using var con = new MySqlConnection(db.cs);
-con.Open();
+var builder = WebApplication.CreateBuilder(args);
 
-string stm = "SELECT * from exercises;";
-using var cmd = new MySqlCommand(stm, con);
-using MySqlDataReader rdr = cmd.ExecuteReader();
-Console.WriteLine("here");
-while (rdr.Read()){
-    Console.WriteLine($"{rdr.GetInt32(0)} {rdr.GetString(1)} {rdr.GetDouble(2)}");
-    Console.WriteLine($"{rdr.GetDateTime(3)}");
+// Add services to the container.
+
+builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("OpenPolicy",
+    builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-Console.WriteLine("here2");
-con.Close();
 
+app.UseHttpsRedirection();
 
-// MySqlConnection con = new MySqlConnection(cs);
-// // string stm = "SELECT * from Exercise";
-// MySqlCommand cmd = new MySqlCommand(stm, con);
-// // while (rdr.Read()){
-// //     Console.WriteLine($"{rdr.GetInt32(0)} {rdr.GetString(1)} {rdr.GetDouble32(2)} {rdr.GetDate(3)}")
-// // }
+app.UseAuthorization();
 
-// // cmd.CommandText = @"INSERT INTO Exercise(ID, ActivityType, Distance, DateCompleted)
-// //     VALUES (@id, @activityType, @distance, @dateCompleted)";
-// // cmd.Parameters.AddWithValue("@id", newID);
-// // cmd.Parameters.AddWithValue("@activityType", newActivityType);
-// // cmd.Parameters.AddWithValue("@distance", newDistance);
-// // cmd.Parameters.AddWithValue("@dateCompleted", newDateCompleted);
-// // cmd.Prepare();
-// // cmd.ExecuteNonQuery();
+app.UseCors("OpenPolicy");
 
+app.MapControllers();
+
+app.Run();

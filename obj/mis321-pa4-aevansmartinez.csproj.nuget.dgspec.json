@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/annyae/Documents/MIS321/mis321-pa4-aevansmartinez/mis321-pa4-aevansmartinez.csproj": {}
+    "/Users/annyae/Documents/MIS321/pa4/mis321-pa4-aevansmartinez/mis321-pa4-aevansmartinez.csproj": {}
   },
   "projects": {
-    "/Users/annyae/Documents/MIS321/mis321-pa4-aevansmartinez/mis321-pa4-aevansmartinez.csproj": {
+    "/Users/annyae/Documents/MIS321/pa4/mis321-pa4-aevansmartinez/mis321-pa4-aevansmartinez.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/annyae/Documents/MIS321/mis321-pa4-aevansmartinez/mis321-pa4-aevansmartinez.csproj",
+        "projectUniqueName": "/Users/annyae/Documents/MIS321/pa4/mis321-pa4-aevansmartinez/mis321-pa4-aevansmartinez.csproj",
         "projectName": "mis321-pa4-aevansmartinez",
-        "projectPath": "/Users/annyae/Documents/MIS321/mis321-pa4-aevansmartinez/mis321-pa4-aevansmartinez.csproj",
+        "projectPath": "/Users/annyae/Documents/MIS321/pa4/mis321-pa4-aevansmartinez/mis321-pa4-aevansmartinez.csproj",
         "packagesPath": "/Users/annyae/.nuget/packages/",
-        "outputPath": "/Users/annyae/Documents/MIS321/mis321-pa4-aevansmartinez/obj/",
+        "outputPath": "/Users/annyae/Documents/MIS321/pa4/mis321-pa4-aevansmartinez/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/annyae/.nuget/NuGet/NuGet.Config"
@@ -38,9 +38,21 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
-            "mysql.data": {
+            "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
-              "version": "[8.2.0, )"
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[7.0.11, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
             }
           },
           "imports": [
@@ -55,6 +67,9 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
