@@ -58,8 +58,6 @@ async function PostExercise(){ //adds exercise to table ~~~~~~~~~~~~~~~~~~~~~~~~
 }
 async function PutExercise(myExercise){ //pin or delete an exercise ~~~~~~ DONE
     let newUrl = url + "/" + myExercise.id;
-    console.log("testing PUT");
-    console.log(myExercise);
     await fetch (newUrl, {
         method: "PUT",
         headers: {
@@ -95,8 +93,6 @@ async function handleExercisePin(findId){  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     await PutExercise(tempExercise);
 }
 function populateTable(){
-    console.log("populating table");
-    console.log(myExercises);
     let html = `
     <table class="table table-striped">
             <tr>
