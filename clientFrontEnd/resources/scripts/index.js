@@ -29,9 +29,6 @@ async function handleOnLoad(){
     document.getElementById('app').innerHTML=html;
     populateTable();
 }
-
-
-
 async function PostExercise(){ //adds exercise to table ~~~~~~~~~~~~~~~~~~~~~~~~ DONE
     const activityTypeConst = document.getElementById('activityType').value;
     const distanceConst = document.getElementById('distance').value;
@@ -59,7 +56,6 @@ async function PostExercise(){ //adds exercise to table ~~~~~~~~~~~~~~~~~~~~~~~~
     myExercises.push(exercise);
     populateTable();
 }
-
 async function PutExercise(myExercise){ //pin or delete an exercise ~~~~~~ DONE
     let newUrl = url + "/" + myExercise.id;
     console.log("testing PUT");
@@ -98,7 +94,6 @@ async function handleExercisePin(findId){  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     tempExercise.pinned = !tempExercise.pinned;
     await PutExercise(tempExercise);
 }
-
 function populateTable(){
     console.log("populating table");
     console.log(myExercises);
