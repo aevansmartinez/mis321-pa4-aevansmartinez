@@ -11,8 +11,7 @@ using mis321_pa4_aevansmartinez.database;
 namespace mis321_pa4_aevansmartinez.Controllers
 {
     [ApiController]
-    //[Route("api/[controller]")]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ExerciseController : ControllerBase
     {
         // GET:  GET ALL EXERCISES
@@ -32,22 +31,18 @@ namespace mis321_pa4_aevansmartinez.Controllers
         }
 
         // POST: CREATE EXERCISE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DONE?
-        [HttpPost( Name = "CreateExercise")]
-        public void Post([FromBody] Exercise value)
+        [HttpPost(Name = "CreateExercise")]
+        public int Post([FromBody] Exercise value)
         {
             ICreateExercise newExercise = new CreateExercise();
-            newExercise.CreateExercise(value);
-            Console.WriteLine(value.activityType);
+            return newExercise.CreateExercise(value);
         }
 
         // PUT: DEL/PIN EXERCISE
-        //[HttpPut("{id}")]
-        [HttpPut( Name = "DelPinExercise")]
-        public void Put(Exercise myExercise){
-            //public void Put(int id, [FromBody] Exercise value)
-        
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] Exercise value){
             IDelPinExercise editExercise = new DelPinExercise();
-            editExercise.DelPinExercise(myExercise);
+            editExercise.DelPinExercise(value);
         }
 
         // DELETE: DONT HARD DELETE THINGS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DONE?

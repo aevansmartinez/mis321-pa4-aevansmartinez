@@ -16,7 +16,7 @@ namespace mis321_pa4_aevansmartinez.database
             cmd.ExecuteNonQuery();
         } */
 
-        void ICreateExercise.CreateExercise(Exercise myExercise){
+        int ICreateExercise.CreateExercise(Exercise myExercise){
             ConnectionString myConnection = new ConnectionString();
             string connects = myConnection.cs;
             using var con = new MySqlConnection(connects);
@@ -32,6 +32,7 @@ namespace mis321_pa4_aevansmartinez.database
 
             cmd.Prepare();
             cmd.ExecuteNonQuery();
+            return (int)(long)cmd.LastInsertedId;
         }
     }
 }

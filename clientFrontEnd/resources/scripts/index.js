@@ -1,15 +1,13 @@
 let count = 0;
 let myExercises = [];
-
 const url = 'http://localhost:5248/api/Exercise';
 
 async function handleOnLoad(){
-    //myExercises=JSON.parse(localStorage.getItem('myExercises'));
     let response = await fetch(url);
     let data = await response.json();
-    console.log(data);
-
+    myExercises = data;
     if(!myExercises){myExercises = []}
+    
     let html= `      
         <div class="banner">
             <h1>Tide Fit</h1>
@@ -17,9 +15,6 @@ async function handleOnLoad(){
         <div id='tableBody'></div>
         
         <form onsubmit= "return false">
-            <label for="ID">Exercise ID:</label><br>
-            <input type="text" id="ID" name="ID"><br>
-
             <label for="activityType">Activity Type:</label><br>
             <input type="text" id="activityType" name="activityType"><br>
 
@@ -29,94 +24,84 @@ async function handleOnLoad(){
             <label for="date">Date Completed:</label><br>
             <input type="text" id="date" name="date"><br>
 
-            <button onclick="handleExerciseAdd()" class="btn btn-primary">Add Exercise</button>
+            <button onclick="PostExercise()" class="btn btn-primary">Add Exercise</button>
         </form>`;
     document.getElementById('app').innerHTML=html;
     populateTable();
 }
 
-function getExercises(){
-    fetch(url).then(function(response){
-        console.log(response);
-        return response.json();
-    }).then(function (json){
-        let html = "<ul>";
-        json.forEach((exercise)=>{
-            html += "<li>" + exercise.ActivityType + ", distance:" + exercise.Distance + "</li>";
-        });
-        html += "</ul>";
-        document.getElementById("exercises").innerHTML = html;
-    }).catch(function (error){
-        console.log(error);
-    });
-}
 
-async function SaveExercise(){
-    let exercise = {id: '192', ActivityType: 'running', Distance: 3.1, DateCompleted: "2023-09-12"}
-    await fetch(url, {
+
+async function PostExercise(){ //adds exercise to table ~~~~~~~~~~~~~~~~~~~~~~~~ DONE
+    const activityTypeConst = document.getElementById('activityType').value;
+    const distanceConst = document.getElementById('distance').value;
+    const dateCompletedConst = document.getElementById('date').value;
+
+    let exercise = {
+        id: 0,
+        activityType: activityTypeConst,
+        distance: distanceConst,
+        dateCompleted: dateCompletedConst,//new Date().toISOString(),
+        pinned: false,
+        deleted: false,
+      };
+
+    let exerciseID = await fetch (url, {
         method: "POST",
-        body: JSON.stringify(exercise),
         headers: {
-            "Content-type": "application/json; charset=UTF-8"
-        }
-    })
-}
-
-async function deleteExercise(){
-    await fetch(url + '/1', {
-        method: "DELETE",
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
         body: JSON.stringify(exercise),
-        headers: {
-            "Content-type" : "application/json; charset=UTF=8"
-        }
-    })
-}
-
-function handleExerciseAdd(){
-    let exercise = {ID: document.getElementById('ID').value, ActivityType: document.getElementById('activityType').value, 
-        Distance: document.getElementById('distance').value, DateCompleted: document.getElementById('date').value,
-        Pinned: false};
+        });
+        
+    exercise.id = await exerciseID.json();
     myExercises.push(exercise);
-    SortTable()
-    localStorage.setItem('myExercises', JSON.stringify(myExercises));
     populateTable();
-    document.getElementById('ID').value = '';
-    document.getElementById('activityType').value = '';
-    document.getElementById('distance').value = '';
-    document.getElementById('date').value = '';
 }
 
-function SortTable(){
+async function PutExercise(myExercise){ //pin or delete an exercise ~~~~~~ DONE
+    let newUrl = url + "/" + myExercise.id;
+    console.log("testing PUT");
+    console.log(myExercise);
+    await fetch (newUrl, {
+        method: "PUT",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(myExercise),
+        });
+    populateTable();
+}
+function SortArray(){
     myExercises.sort(function (a,b){
-        if (a.Pinned != b.Pinned){
-            if (a.Pinned == true) return -1;
+        if (a.pinned != b.pinned){
+            if (a.pinned == true) return -1;
             else return 1;
         }
-        return new Date(b.DateCompleted) - new Date(a.DateCompleted);
+        if (a.dateCompleted > b.dateCompleted) return 1;
+        else return -1;
     });
 }
-
-function handleExerciseDeleteSoft(id){
+async function handleExerciseDeleteSoft(id){ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ DONE
     let tempExercise = myExercises.find(function (a){
         return a.id == id;
     });
     tempExercise.deleted = !tempExercise.deleted;
-    localStorage.setItem('myExercises', JSON.stringify(myExercises));
-    populateTable();
+    await PutExercise(tempExercise);
 }
-
-function handleExercisePin(id){
+async function handleExercisePin(findId){  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ DONE
     let tempExercise = myExercises.find(function (a){
-        return a.ID == id;
+        return a.id == findId;
     });
-    tempExercise.Pinned = !tempExercise.Pinned;
-    SortTable();
-    localStorage.setItem('myExercises', JSON.stringify(myExercises));
-    populateTable();
+    tempExercise.pinned = !tempExercise.pinned;
+    await PutExercise(tempExercise);
 }
 
 function populateTable(){
-    let index = 1;
+    console.log("populating table");
+    console.log(myExercises);
     let html = `
     <table class="table table-striped">
             <tr>
@@ -127,37 +112,27 @@ function populateTable(){
                 <th>Pin</th>
                 <th>Delete</th>
             </tr>`;
+    SortArray();
     myExercises.forEach(function(exercise){
         let pinButton = "Unpin"
-        if (exercise.Distance==undefined){
-            exercise.Distance = 0;
+        if (exercise.distance==undefined){
+            exercise.distance = 0;
         }
-        if(exercise.Pinned==undefined || exercise.Pinned == false){
-            exercise.Pinned = false;
+        if (exercise.pinned == false){
             pinButton = "Pin";
         }
-        html += `
-            <tr>
-                <td>${exercise.ID}</td>
-                <td>${exercise.ActivityType}</td>
-                <td>${exercise.Distance}</td>
-                <td>${exercise.DateCompleted}</td>
-                <td><button class="btn btn-warning" id ="pin${index}" onclick="handleExercisePin('${exercise.ID}')">${pinButton}</button></td>
-                <td><button class="btn btn-danger" onclick="handleExerciseDelete('${exercise.ID}')">Delete</button></td>
-            </tr>`;
-        index++;
-
+        if (exercise.deleted == false){
+            html += `
+                <tr>
+                    <td>${exercise.id}</td>
+                    <td>${exercise.activityType}</td>
+                    <td>${exercise.distance}</td>
+                    <td>${exercise.dateCompleted}</td>
+                    <td><button class="btn btn-warning" onclick="handleExercisePin('${exercise.id}')">${pinButton}</button></td>
+                    <td><button class="btn btn-danger" onclick="handleExerciseDeleteSoft('${exercise.id}')">Delete</button></td>
+                </tr>`;
+        }
     })
     html += `</table>`
     document.getElementById('tableBody').innerHTML = html;
 }
-
-// function myFunction() {
-//     document.getElementById("demo").innerHTML = "Hello World";
-// }
-
-// function handleExerciseDelete(id){
-//     myExercises = myExercises.filter(exercise => exercise.ID != id);
-//     localStorage.setItem('myExercises', JSON.stringify(myExercises));
-//     populateTable();
-// }

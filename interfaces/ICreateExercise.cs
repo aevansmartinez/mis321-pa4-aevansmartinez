@@ -3,6 +3,6 @@ namespace mis321_pa4_aevansmartinez.interfaces
 {
     public interface ICreateExercise
     {
-         public void CreateExercise(Exercise myExercise);
+         public int CreateExercise(Exercise myExercise);
     }
 }
