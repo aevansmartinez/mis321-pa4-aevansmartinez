@@ -76,7 +76,7 @@ function SortArray(){
             if (a.pinned == true) return -1;
             else return 1;
         }
-        if (a.dateCompleted > b.dateCompleted) return 1;
+        if (a.dateCompleted < b.dateCompleted) return 1;
         else return -1;
     });
 }
